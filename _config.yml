@@ -1,0 +1,9 @@
+# GitHub Pages Configuration
+# This file configures GitHub Pages to build from the root of the main branch.
+
+# Specify the base URL for the site
+baseurl: ""
+
+# Indicate whether to be a standalone page or not
+github-pages:
+  enable: true
