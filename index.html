@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Mark ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(120deg, #ffd1dc, #c2e9fb);
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  font-size: 26px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  background: #ff6b81;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1 id="text">Click the button 👇</h1>
+<button onclick="next()">Continue</button>
+
+<script>
+const messages = [
+  "Today is a special day 🎂",
+  "It's your birthday",
+  "I was thinking what gift to give you",
+  "Nothing felt special enough",
+  "So I made this just for you",
+  "I think I like you ❤️"
+];
+
+let i = 0;
+
+function next() {
+  if (i < messages.length) {
+    document.getElementById("text").innerText = messages[i];
+    i++;
+  }
+}
+</script>
+
+</body>
+</html>
