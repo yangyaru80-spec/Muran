@@ -1,198 +1,147 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生日惊喜</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Mark ❤️</title>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-            overflow: hidden;
-            cursor: pointer;
-        }
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(120deg, #ffd1dc, #c2e9fb);
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  text-align: center;
+}
 
-        /* ========== 背景动画 ========== */
-        .background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 50%, #fed7aa 100%);
-            animation: breathe 6s ease-in-out infinite;
-            z-index: -2;
-        }
+.container {
+  max-width: 90%;
+}
 
-        @keyframes breathe {
-            0%, 100% {
-                opacity: 0.95;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
+h1 {
+  font-size: 28px;
+  color: #333;
+  min-height: 60px;
+}
 
-        /* ========== 容器 ========== */
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            width: 100%;
-            padding: 20px;
-        }
+button {
+  margin-top: 30px;
+  padding: 12px 28px;
+  font-size: 18px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(45deg, #ff6b81, #ff9a9e);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
 
-        .content {
-            text-align: center;
-            max-width: 600px;
-            animation: fadeIn 0.8s ease-in;
-        }
+button:hover {
+  transform: scale(1.1);
+}
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.fade {
+  animation: fadeIn 1s;
+}
 
-        /* ========== 文本样式 ========== */
-        .title {
-            font-size: clamp(32px, 8vw, 56px);
-            font-weight: 300;
-            letter-spacing: 2px;
-            color: #1f2937;
-            margin-bottom: 40px;
-            line-height: 1.4;
-            min-height: 80px;
-        }
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
 
-        .title.final {
-            font-size: clamp(36px, 10vw, 72px);
-            font-weight: 400;
-            animation: softGlow 0.8s ease-in;
-        }
+/* ❤️ 爱心动画 */
+.heart {
+  position: fixed;
+  color: #ff6b81;
+  animation: float 4s linear infinite;
+}
 
-        @keyframes softGlow {
-            0% {
-                transform: scale(1);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1.05);
-                opacity: 1;
-            }
-        }
+@keyframes float {
+  0% {transform: translateY(0); opacity:1;}
+  100% {transform: translateY(-800px); opacity:0;}
+}
+</style>
+</head>
 
-        .subtitle {
-            font-size: clamp(14px, 4vw, 18px);
-            color: #6b7280;
-            font-weight: 300;
-            letter-spacing: 1px;
-            min-height: 30px;
-            margin-top: 20px;
-        }
+<body>
 
-        /* ========== 按钮 ========== */
-        .button {
-            margin-top: 50px;
-            padding: 16px 40px;
-            font-size: clamp(14px, 4vw, 16px);
-            border: none;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
-            color: white;
-            cursor: pointer;
-            font-weight: 500;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.3);
-            animation: slideUp 0.6s ease 0.2s backwards;
-        }
+<div class="container">
+  <h1 id="text"></h1>
+  <button onclick="next()">Tap to continue</button>
+</div>
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+<script>
+const messages = [
+  "Today is a special day 🎂",
+  "It's your birthday",
+  "I was thinking what gift to give you...",
+  "Nothing felt special enough",
+  "So I made this just for you",
+  "Maybe it's a bit silly",
+  "But I really wanted to do it",
+  "There is something I've been thinking about...",
+  "I'm not sure if I should say it...",
+  "...",
+  "I think I like you ❤️"
+];
 
-        .button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(244, 114, 182, 0.4);
-        }
+let index = 0;
+let typing = false;
 
-        .button:active {
-            transform: scale(0.98);
-        }
+function typeText(text, i = 0) {
+  const el = document.getElementById("text");
+  if (i < text.length) {
+    el.innerHTML += text.charAt(i);
+    setTimeout(() => typeText(text, i + 1), 50);
+  } else {
+    typing = false;
+  }
+}
 
-        .button.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(20px);
-        }
+function next() {
+  if (typing) return;
 
-        /* ========== 爱心飘落 ========== */
-        .hearts-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
+  const el = document.getElementById("text");
+  el.innerHTML = "";
+  el.classList.add("fade");
 
-        .heart {
-            position: absolute;
-            font-size: 24px;
-            opacity: 0.6;
-            animation: fall linear forwards;
-        }
+  typing = true;
 
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) translateX(var(--tx));
-                opacity: 0;
-            }
-        }
+  if (index < messages.length) {
+    typeText(messages[index]);
+    index++;
+  }
 
-        /* ========== 背景变亮效果 ========== */
-        .background.final-glow {
-            background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 50%, #fef3c7 100%);
-            animation: finalGlow 1s ease-in-out;
-        }
+  // 💥最后效果
+  if (index === messages.length) {
+    document.querySelector("button").style.display = "none";
+    startHearts();
+  }
+}
 
-        @keyframes finalGlow {
-            0% {
-                filter: brightness(1);
-            }
-            50% {
-                filter: brightness(1.1);
-            }
-            100% {
-                filter: brightness(1.05);
-            }
-        }
+// ❤️生成爱心
+function startHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.fontSize = Math.random() * 20 + 20 + "px";
+    document.body.appendChild(heart);
 
-        /* ========== 震动效果 ========== */
-        .shake {
-            animation: shake 0.4s ease-in-out;
-        }
+    setTimeout(() => {
+      heart.remove();
+    }, 4000);
+  }, 300);
+}
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-   
+// 初始文字
+next();
+</script>
+
+</body>
+</html>
