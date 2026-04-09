@@ -22,7 +22,6 @@ h1 {
   font-size: 28px;
   min-height: 60px;
   color: #333;
-  transition: 0.3s;
 }
 
 button {
@@ -36,15 +35,13 @@ button {
   cursor: pointer;
 }
 
-button:active {
-  transform: scale(0.95);
-}
-
 img {
-  width: 200px;
+  width: 220px;
   border-radius: 15px;
   margin-top: 20px;
   display: none;
+  opacity: 0;
+  transition: opacity 1s;
 }
 
 /* ❤️爱心 */
@@ -67,11 +64,9 @@ img {
   <h1 id="text">Tap anywhere 💌</h1>
   <button onclick="next()">Continue</button>
   <br>
-  <img id="photo" src="https://via.placeholder.com/200">
+  <!-- ✅这里已经帮你换好图片 -->
+  <img id="photo" src="mmexport1775756575498.jpg">
 </div>
-
-<!-- 🎵音乐（点击后自动播放） -->
-<audio id="bgm" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
 <script>
 const messages = [
@@ -79,29 +74,25 @@ const messages = [
   "It's your birthday",
   "I was thinking what gift to give you...",
   "Nothing felt special enough",
-  "So I made this just for you",
-  "Maybe it's a bit silly",
-  "But I really wanted to do it",
+  "So I made this… for you",
   "There is something I want to tell you...",
   "👉 I've liked you for a while ❤️"
 ];
 
 let i = 0;
 let typing = false;
-let currentText = "";
 let fullText = "";
 
 function typeText(text) {
   let j = 0;
   typing = true;
   fullText = text;
-  currentText = "";
-  document.getElementById("text").innerText = "";
+  const el = document.getElementById("text");
+  el.innerText = "";
 
   function typingEffect() {
     if (j < text.length) {
-      currentText += text[j];
-      document.getElementById("text").innerText = currentText;
+      el.innerText += text[j];
       j++;
       setTimeout(typingEffect, 40);
     } else {
@@ -113,10 +104,6 @@ function typeText(text) {
 }
 
 function next() {
-  // 🎵播放音乐（只触发一次）
-  document.getElementById("bgm").play().catch(()=>{});
-
-  // 👉 打字中点击 = 直接显示完整
   if (typing) {
     document.getElementById("text").innerText = fullText;
     typing = false;
@@ -128,20 +115,23 @@ function next() {
     i++;
   }
 
-  // 📸中途展示图片（第5句后）
+  // 📸照片出现（淡入）
   if (i === 5) {
-    document.getElementById("photo").style.display = "block";
+    const img = document.getElementById("photo");
+    img.style.display = "block";
+    setTimeout(() => {
+      img.style.opacity = 1;
+    }, 100);
   }
 
-  // 💥最终效果
+  // 💥最后爱心爆发
   if (i === messages.length) {
     document.querySelector("button").style.display = "none";
-    document.getElementById("text").style.fontSize = "34px";
     startHearts();
   }
 }
 
-// ❤️爱心生成
+// ❤️爱心动画
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
