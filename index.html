@@ -17,18 +17,18 @@ body {
   align-items: center;
   text-align: center;
   overflow: hidden;
+  transition: background 2s;
 }
 
-/* 容器 */
 .container {
   max-width: 90%;
-  z-index: 2;
 }
 
-/* 标题 */
+/* 文字 */
 h1 {
   font-size: 28px;
   min-height: 60px;
+  transition: all 0.5s;
 }
 
 /* 按钮 */
@@ -45,48 +45,37 @@ button {
 
 /* 图片 */
 .photo {
-  width: 220px;
+  width: 240px;
   border-radius: 20px;
   margin-top: 20px;
   display: none;
-  box-shadow: 0 0 40px rgba(255,105,135,0.8);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 1.5s;
+  box-shadow: 0 0 60px rgba(255,100,150,0.8);
 }
 
 /* 爱心 */
 .heart {
   position: fixed;
   color: #ff6b81;
-  animation: float 5s linear infinite;
+  animation: float 6s linear infinite;
 }
 
 @keyframes float {
-  0% {transform: translateY(0); opacity:1;}
-  100% {transform: translateY(-800px); opacity:0;}
+  from {transform: translateY(0); opacity:1;}
+  to {transform: translateY(-900px); opacity:0;}
 }
 
-/* 渐入 */
-.fade {
-  animation: fadeIn 1.5s;
+/* 心跳效果 */
+@keyframes heartbeat {
+  0% {transform: scale(1);}
+  50% {transform: scale(1.05);}
+  100% {transform: scale(1);}
 }
 
-@keyframes fadeIn {
-  from {opacity:0;}
-  to {opacity:1;}
-}
-
-/* 黑屏渐亮 */
-body::before {
-  content:"";
-  position: fixed;
-  width:100%;
-  height:100%;
-  background:black;
-  animation: openScene 2s forwards;
-}
-
-@keyframes openScene {
-  from {opacity:1;}
-  to {opacity:0;}
+.heartbeat {
+  animation: heartbeat 1s infinite;
 }
 </style>
 </head>
@@ -94,13 +83,13 @@ body::before {
 <body>
 
 <div class="container">
-  <h1 id="text"></h1>
+  <h1 id="text">Tap to start 💌</h1>
   <img src="mmexport1775756575498.jpg" class="photo" id="photo">
-  <button onclick="next()">Tap to continue</button>
+  <button onclick="next()">Start</button>
 </div>
 
-<!-- 音乐（自动播放） -->
-<audio id="music" loop>
+<!-- 🎵音乐 -->
+<audio id="music">
   <source src="https://www.ytmp3.cn/down/77761.mp3" type="audio/mpeg">
 </audio>
 
@@ -108,21 +97,22 @@ body::before {
 
 const messages = [
   "Hey...",
-  "Today is a special day 🎂",
-  "I thought a lot about what to give you",
-  "Something normal didn't feel enough",
-  "So I made this just for you",
+  "I didn't know what to give you 🎂",
+  "So I made something different",
+  "Something just for you",
   "Because you are special to me",
-  "And there is something I want to tell you...",
+  "And maybe...",
+  "This is a bit scary to say",
   "...",
-  "I think...",
+  "But I don't want to hide it anymore",
   "I really like you ❤️"
 ];
 
 let index = 0;
 let typing = false;
+let musicPlayed = false;
 
-/* 打字效果 */
+/* 打字 */
 function typeText(text, i = 0) {
   const el = document.getElementById("text");
   if (i < text.length) {
@@ -133,14 +123,12 @@ function typeText(text, i = 0) {
   }
 }
 
-/* 点击逻辑 */
+/* 点击 */
 function next() {
   if (typing) return;
 
   const el = document.getElementById("text");
   el.innerHTML = "";
-  el.classList.add("fade");
-
   typing = true;
 
   if (index < messages.length) {
@@ -148,24 +136,41 @@ function next() {
     index++;
   }
 
-  // 显示照片
+  // 📸照片出现
   if (index === 5) {
-    document.getElementById("photo").style.display = "block";
+    const img = document.getElementById("photo");
+    img.style.display = "block";
+    setTimeout(() => {
+      img.style.opacity = 1;
+      img.style.transform = "scale(1)";
+    }, 200);
   }
 
-  // 播放音乐（必须用户点击触发）
-  if (index === 2) {
+  // 🎵音乐触发（最后阶段）
+  if (index === messages.length - 1 && !musicPlayed) {
     document.getElementById("music").play();
+    musicPlayed = true;
   }
 
-  // 最终效果
+  // 💥最终爆发
   if (index === messages.length) {
+
     document.querySelector("button").style.display = "none";
+
+    // 背景变亮
+    document.body.style.background = "linear-gradient(135deg,#ff9a9e,#fad0c4)";
+
+    // 心跳
+    el.classList.add("heartbeat");
+
+    // 放大文字
+    el.style.fontSize = "34px";
+
     startHearts();
   }
 }
 
-/* 爱心动画 */
+/* ❤️爱心 */
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
@@ -175,17 +180,9 @@ function startHearts() {
     heart.style.fontSize = Math.random() * 20 + 20 + "px";
     document.body.appendChild(heart);
 
-    setTimeout(() => {
-      heart.remove();
-    }, 5000);
-  }, 300);
+    setTimeout(()=>heart.remove(),6000);
+  }, 200);
 }
-
-/* 初始加载 */
-setTimeout(() => {
-  next();
-}, 1000);
-
 </script>
 
 </body>
