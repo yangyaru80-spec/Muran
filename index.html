@@ -12,25 +12,27 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(120deg, #ffd1dc, #c2e9fb);
-  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+  font-family: 'Segoe UI', sans-serif;
   text-align: center;
   overflow: hidden;
 }
 
 h1 {
-  font-size: 26px;
+  font-size: 28px;
   min-height: 60px;
+  color: #333;
+  transition: 0.3s;
 }
 
 button {
   margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 12px 25px;
+  border-radius: 25px;
   border: none;
-  border-radius: 20px;
   background: #ff6b81;
   color: white;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -38,7 +40,14 @@ button:active {
   transform: scale(0.95);
 }
 
-/* 爱心 */
+img {
+  width: 200px;
+  border-radius: 15px;
+  margin-top: 20px;
+  display: none;
+}
+
+/* ❤️爱心 */
 .heart {
   position: fixed;
   color: #ff6b81;
@@ -47,15 +56,22 @@ button:active {
 
 @keyframes float {
   from {transform: translateY(0); opacity:1;}
-  to {transform: translateY(-600px); opacity:0;}
+  to {transform: translateY(-700px); opacity:0;}
 }
 </style>
 </head>
 
-<body>
+<body onclick="next()">
 
-<h1 id="text">Tap to start 💌</h1>
-<button onclick="next()">Continue</button>
+<div>
+  <h1 id="text">Tap anywhere 💌</h1>
+  <button onclick="next()">Continue</button>
+  <br>
+  <img id="photo" src="https://via.placeholder.com/200">
+</div>
+
+<!-- 🎵音乐（点击后自动播放） -->
+<audio id="bgm" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
 <script>
 const messages = [
@@ -67,20 +83,25 @@ const messages = [
   "Maybe it's a bit silly",
   "But I really wanted to do it",
   "There is something I want to tell you...",
-  "I think I like you ❤️"
+  "👉 I've liked you for a while ❤️"
 ];
 
 let i = 0;
 let typing = false;
+let currentText = "";
+let fullText = "";
 
 function typeText(text) {
   let j = 0;
   typing = true;
+  fullText = text;
+  currentText = "";
   document.getElementById("text").innerText = "";
 
   function typingEffect() {
     if (j < text.length) {
-      document.getElementById("text").innerText += text[j];
+      currentText += text[j];
+      document.getElementById("text").innerText = currentText;
       j++;
       setTimeout(typingEffect, 40);
     } else {
@@ -92,19 +113,35 @@ function typeText(text) {
 }
 
 function next() {
-  if (typing) return;
+  // 🎵播放音乐（只触发一次）
+  document.getElementById("bgm").play().catch(()=>{});
+
+  // 👉 打字中点击 = 直接显示完整
+  if (typing) {
+    document.getElementById("text").innerText = fullText;
+    typing = false;
+    return;
+  }
 
   if (i < messages.length) {
     typeText(messages[i]);
     i++;
   }
 
+  // 📸中途展示图片（第5句后）
+  if (i === 5) {
+    document.getElementById("photo").style.display = "block";
+  }
+
+  // 💥最终效果
   if (i === messages.length) {
     document.querySelector("button").style.display = "none";
+    document.getElementById("text").style.fontSize = "34px";
     startHearts();
   }
 }
 
+// ❤️爱心生成
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
@@ -114,7 +151,7 @@ function startHearts() {
     document.body.appendChild(heart);
 
     setTimeout(() => heart.remove(), 4000);
-  }, 300);
+  }, 200);
 }
 </script>
 
