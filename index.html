@@ -12,76 +12,119 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
   font-family: 'Segoe UI', sans-serif;
-  text-align: center;
   overflow: hidden;
+  background: linear-gradient(270deg, #fbc2eb, #a6c1ee, #ffd1dc);
+  background-size: 600% 600%;
+  animation: bgMove 12s ease infinite;
+}
+
+/* 🌈背景流动 */
+@keyframes bgMove {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+/* 💌卡片 */
+.card {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 20px;
+  width: 85%;
+  max-width: 320px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 24px;
   min-height: 60px;
   color: #333;
 }
 
+/* 按钮 */
 button {
-  margin-top: 20px;
-  padding: 12px 25px;
-  border-radius: 25px;
+  margin-top: 15px;
+  padding: 10px 20px;
+  border-radius: 20px;
   border: none;
   background: #ff6b81;
   color: white;
-  font-size: 16px;
   cursor: pointer;
 }
 
+/* 📸图片 */
 img {
-  width: 220px;
+  width: 100%;
   border-radius: 15px;
-  margin-top: 20px;
+  margin-top: 15px;
   display: none;
   opacity: 0;
-  transition: opacity 1s;
+  transform: scale(0.8);
+  transition: all 1s;
 }
 
 /* ❤️爱心 */
 .heart {
   position: fixed;
   color: #ff6b81;
-  animation: float 4s linear;
+  font-size: 20px;
+  animation: floatUp 5s linear;
 }
 
-@keyframes float {
+@keyframes floatUp {
   from {transform: translateY(0); opacity:1;}
-  to {transform: translateY(-700px); opacity:0;}
+  to {transform: translateY(-800px); opacity:0;}
+}
+
+/* ✨点击光点 */
+.spark {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  animation: spark 1s linear;
+}
+
+@keyframes spark {
+  to {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
 }
 </style>
 </head>
 
-<body onclick="next()">
+<body onclick="next(event)">
 
-<div>
+<div class="card">
   <h1 id="text">Tap anywhere 💌</h1>
-  <button onclick="next()">Continue</button>
-  <br>
-  <!-- ✅这里已经帮你换好图片 -->
+  <button onclick="next(event)">Continue</button>
   <img id="photo" src="mmexport1775756575498.jpg">
 </div>
+
+<!-- 🎵告白气球 -->
+<iframe id="music" width="0" height="0"
+src="https://music.163.com/outchain/player?type=2&id=436514312&auto=0">
+</iframe>
 
 <script>
 const messages = [
   "Today is a special day 🎂",
   "It's your birthday",
-  "I was thinking what gift to give you...",
-  "Nothing felt special enough",
-  "So I made this… for you",
+  "I was thinking about you...",
+  "About how to surprise you",
+  "So I made this… just for you",
   "There is something I want to tell you...",
-  "👉 I've liked you for a while ❤️"
+  "I think I like you ❤️"
 ];
 
 let i = 0;
 let typing = false;
 let fullText = "";
+let musicPlayed = false;
 
 function typeText(text) {
   let j = 0;
@@ -99,11 +142,21 @@ function typeText(text) {
       typing = false;
     }
   }
-
   typingEffect();
 }
 
-function next() {
+function next(e) {
+
+  // ✨点击光点效果
+  if(e){
+    const spark = document.createElement("div");
+    spark.className = "spark";
+    spark.style.left = e.clientX + "px";
+    spark.style.top = e.clientY + "px";
+    document.body.appendChild(spark);
+    setTimeout(()=>spark.remove(),1000);
+  }
+
   if (typing) {
     document.getElementById("text").innerText = fullText;
     typing = false;
@@ -115,23 +168,29 @@ function next() {
     i++;
   }
 
-  // 📸照片出现（淡入）
+  // 📸照片出现（更高级）
   if (i === 5) {
     const img = document.getElementById("photo");
     img.style.display = "block";
     setTimeout(() => {
       img.style.opacity = 1;
+      img.style.transform = "scale(1)";
     }, 100);
   }
 
-  // 💥最后爱心爆发
+  // 🎵最后播放音乐
+  if (i === messages.length && !musicPlayed) {
+    document.getElementById("music").src += "&auto=1";
+    musicPlayed = true;
+  }
+
+  // ❤️结尾效果
   if (i === messages.length) {
-    document.querySelector("button").style.display = "none";
     startHearts();
   }
 }
 
-// ❤️爱心动画
+// ❤️爱心
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
@@ -139,9 +198,8 @@ function startHearts() {
     heart.innerHTML = "❤️";
     heart.style.left = Math.random() * window.innerWidth + "px";
     document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 4000);
-  }, 200);
+    setTimeout(()=>heart.remove(),5000);
+  }, 300);
 }
 </script>
 
