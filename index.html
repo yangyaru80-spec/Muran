@@ -3,204 +3,189 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Mark ❤️</title>
+<title>For You ❤️</title>
 
 <style>
 body {
   margin: 0;
   height: 100vh;
+  background: black;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
   overflow: hidden;
-  background: linear-gradient(270deg, #fbc2eb, #a6c1ee, #ffd1dc);
-  background-size: 600% 600%;
-  animation: bgMove 12s ease infinite;
 }
 
-/* 🌈背景流动 */
-@keyframes bgMove {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
+/* 容器 */
+.container {
+  max-width: 90%;
+  z-index: 2;
 }
 
-/* 💌卡片 */
-.card {
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(10px);
-  padding: 30px;
-  border-radius: 20px;
-  width: 85%;
-  max-width: 320px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
+/* 标题 */
 h1 {
-  font-size: 24px;
+  font-size: 28px;
   min-height: 60px;
-  color: #333;
 }
 
 /* 按钮 */
 button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border-radius: 20px;
+  margin-top: 30px;
+  padding: 12px 30px;
+  font-size: 18px;
   border: none;
-  background: #ff6b81;
+  border-radius: 30px;
+  background: linear-gradient(45deg,#ff6b81,#ff9a9e);
   color: white;
   cursor: pointer;
 }
 
-/* 📸图片 */
-img {
-  width: 100%;
-  border-radius: 15px;
-  margin-top: 15px;
+/* 图片 */
+.photo {
+  width: 220px;
+  border-radius: 20px;
+  margin-top: 20px;
   display: none;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 1s;
+  box-shadow: 0 0 40px rgba(255,105,135,0.8);
 }
 
-/* ❤️爱心 */
+/* 爱心 */
 .heart {
   position: fixed;
   color: #ff6b81;
-  font-size: 20px;
-  animation: floatUp 5s linear;
+  animation: float 5s linear infinite;
 }
 
-@keyframes floatUp {
-  from {transform: translateY(0); opacity:1;}
-  to {transform: translateY(-800px); opacity:0;}
+@keyframes float {
+  0% {transform: translateY(0); opacity:1;}
+  100% {transform: translateY(-800px); opacity:0;}
 }
 
-/* ✨点击光点 */
-.spark {
+/* 渐入 */
+.fade {
+  animation: fadeIn 1.5s;
+}
+
+@keyframes fadeIn {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+
+/* 黑屏渐亮 */
+body::before {
+  content:"";
   position: fixed;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-  animation: spark 1s linear;
+  width:100%;
+  height:100%;
+  background:black;
+  animation: openScene 2s forwards;
 }
 
-@keyframes spark {
-  to {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
+@keyframes openScene {
+  from {opacity:1;}
+  to {opacity:0;}
 }
 </style>
 </head>
 
-<body onclick="next(event)">
+<body>
 
-<div class="card">
-  <h1 id="text">Tap anywhere 💌</h1>
-  <button onclick="next(event)">Continue</button>
-  <img id="photo" src="mmexport1775756575498.jpg">
+<div class="container">
+  <h1 id="text"></h1>
+  <img src="mmexport1775756575498.jpg" class="photo" id="photo">
+  <button onclick="next()">Tap to continue</button>
 </div>
 
-<!-- 🎵告白气球 -->
-<iframe id="music" width="0" height="0"
-src="https://music.163.com/outchain/player?type=2&id=436514312&auto=0">
-</iframe>
+<!-- 音乐（自动播放） -->
+<audio id="music" loop>
+  <source src="https://www.ytmp3.cn/down/77761.mp3" type="audio/mpeg">
+</audio>
 
 <script>
+
 const messages = [
+  "Hey...",
   "Today is a special day 🎂",
-  "It's your birthday",
-  "I was thinking about you...",
-  "About how to surprise you",
-  "So I made this… just for you",
-  "There is something I want to tell you...",
-  "I think I like you ❤️"
+  "I thought a lot about what to give you",
+  "Something normal didn't feel enough",
+  "So I made this just for you",
+  "Because you are special to me",
+  "And there is something I want to tell you...",
+  "...",
+  "I think...",
+  "I really like you ❤️"
 ];
 
-let i = 0;
+let index = 0;
 let typing = false;
-let fullText = "";
-let musicPlayed = false;
 
-function typeText(text) {
-  let j = 0;
-  typing = true;
-  fullText = text;
+/* 打字效果 */
+function typeText(text, i = 0) {
   const el = document.getElementById("text");
-  el.innerText = "";
-
-  function typingEffect() {
-    if (j < text.length) {
-      el.innerText += text[j];
-      j++;
-      setTimeout(typingEffect, 40);
-    } else {
-      typing = false;
-    }
+  if (i < text.length) {
+    el.innerHTML += text.charAt(i);
+    setTimeout(() => typeText(text, i + 1), 50);
+  } else {
+    typing = false;
   }
-  typingEffect();
 }
 
-function next(e) {
+/* 点击逻辑 */
+function next() {
+  if (typing) return;
 
-  // ✨点击光点效果
-  if(e){
-    const spark = document.createElement("div");
-    spark.className = "spark";
-    spark.style.left = e.clientX + "px";
-    spark.style.top = e.clientY + "px";
-    document.body.appendChild(spark);
-    setTimeout(()=>spark.remove(),1000);
+  const el = document.getElementById("text");
+  el.innerHTML = "";
+  el.classList.add("fade");
+
+  typing = true;
+
+  if (index < messages.length) {
+    typeText(messages[index]);
+    index++;
   }
 
-  if (typing) {
-    document.getElementById("text").innerText = fullText;
-    typing = false;
-    return;
+  // 显示照片
+  if (index === 5) {
+    document.getElementById("photo").style.display = "block";
   }
 
-  if (i < messages.length) {
-    typeText(messages[i]);
-    i++;
+  // 播放音乐（必须用户点击触发）
+  if (index === 2) {
+    document.getElementById("music").play();
   }
 
-  // 📸照片出现（更高级）
-  if (i === 5) {
-    const img = document.getElementById("photo");
-    img.style.display = "block";
-    setTimeout(() => {
-      img.style.opacity = 1;
-      img.style.transform = "scale(1)";
-    }, 100);
-  }
-
-  // 🎵最后播放音乐
-  if (i === messages.length && !musicPlayed) {
-    document.getElementById("music").src += "&auto=1";
-    musicPlayed = true;
-  }
-
-  // ❤️结尾效果
-  if (i === messages.length) {
+  // 最终效果
+  if (index === messages.length) {
+    document.querySelector("button").style.display = "none";
     startHearts();
   }
 }
 
-// ❤️爱心
+/* 爱心动画 */
 function startHearts() {
   setInterval(() => {
     const heart = document.createElement("div");
     heart.className = "heart";
     heart.innerHTML = "❤️";
     heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.fontSize = Math.random() * 20 + 20 + "px";
     document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),5000);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 5000);
   }, 300);
 }
+
+/* 初始加载 */
+setTimeout(() => {
+  next();
+}, 1000);
+
 </script>
 
 </body>
